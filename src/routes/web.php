@@ -13,6 +13,12 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+/** old
+ *
 $router->get('/', 'HomeController@index');
 $router->get('/v1/users/{id}','V1\UserController@getById');
 $router->post('/v1/users/{id}','V1\UserController@updateById');
+ */
+
+// shorten url
+$router->post('/shorten', 'V2\V2ShortenController@addShorten');
