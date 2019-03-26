@@ -36,6 +36,20 @@ class V2ShortenRepository extends Repository {
             ->exists();
     }
 
+    public function incrementShorten($shortcode){
+        \DB::table('shorten')
+            ->where('shortcode', $shortcode)
+            ->increment('redirectCount', 1);
+    }
+
+    public function updateRedirectShorten($shortcode, $lastSeenDate){
+        $this->incrementShorten($shortcode);
+
+        return \DB::table('shorten')
+            ->where('shortcode', $shortcode)
+            ->update(['lastSeenDate' => $lastSeenDate]);
+    }
+
     public function addShorten($url, $shortcode, $startDate){
          \DB::table('shorten')
             ->insert(

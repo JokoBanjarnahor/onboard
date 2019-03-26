@@ -69,10 +69,15 @@ class V2ShortenController extends Controller
     // region for get by shortcode
     public function getByShortcode($shortcode, Request $request, V2ShortenService $v2ShortenService){
 
+        $currentDate = date('c');
+
         $data = $v2ShortenService->getByShortcode($shortcode);
+
         if (empty($data)){
             return response()->json('The shortcode cannot be found in the system', HTTPStatus::HTTP_NOT_FOUND);
         }
+
+        $v2ShortenService->updateRedirectShorten($shortcode, $currentDate);
 
         return response(redirect($data->url), HTTPStatus::HTTP_FOUND);
     }

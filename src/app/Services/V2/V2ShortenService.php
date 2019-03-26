@@ -49,4 +49,9 @@ class V2ShortenService extends Service
         $status = $this->v2ShortenRepository->getStatusShortcode($shortcode);
         return $status;
     }
+
+    public function updateRedirectShorten($shortcode, $lastSeenDate){
+        $update = $this->v2ShortenRepository->updateRedirectShorten($shortcode, $lastSeenDate);
+        return $update;
+    }
 }
