@@ -17,18 +17,22 @@ use App\Http\Controllers\Controller;
 
 class V2ShortenController extends Controller
 {
-
+    // region for get all data
     public function getAll(Request $request, V2ShortenService $v2ShortenService){
 
         $data = $v2ShortenService->getAll();
         return response()->json($data);
     }
+    // end region for get all data
 
+    // region for add shortcode
     public function addShorten(Request $request, V2ShortenService $v2ShortenService)
     {
         // if it's json or not
-        // use database isShortcodeexist
         $data = $v2ShortenService->getAll();
+
+        // get current date
+        $startDate = date('c');
 
         //var_dump($allData->contains('shortcode', '789asd'));
         $url = $request->json()->get('url');
@@ -56,28 +60,47 @@ class V2ShortenController extends Controller
             }
         }
 
-        $hasil = $v2ShortenService->addShorten($url, $shortcode);
+        $hasil = $v2ShortenService->addShorten($url, $shortcode, $startDate);
 
         return response()->json($hasil, HTTPStatus::HTTP_CREATED);
     }
+    // end region add shortcode
 
+    // region for get by shortcode
     public function getByShortcode($shortcode, Request $request, V2ShortenService $v2ShortenService){
 
         $data = $v2ShortenService->getByShortcode($shortcode);
-//        var_dump($data);
         if (empty($data)){
             return response()->json('The shortcode cannot be found in the system', HTTPStatus::HTTP_NOT_FOUND);
         }
 
         return response(redirect($data->url), HTTPStatus::HTTP_FOUND);
     }
+    // end region for get by shortcode
 
+    // region for get status by shortcode
+    public function getStatusByShortcode($shortcode, Request $request, V2ShortenService $v2ShortenService){
+
+        $data = $v2ShortenService->getStatusByShortcode($shortcode);
+
+        // change date format to ISO 8601
+        $startDate = new \DateTime($data->startDate);
+        $lastSeenDate = new \DateTime($data->lastSeenDate);
+
+        $data->startDate = $startDate->format('c');
+        $data->lastSeenDate = $lastSeenDate->format('c');
+
+        return response()->json($data);
+    }
+    // end region for get status by shortcode
+
+    // region for generate shortcode
     private function generateShortcode(){
 
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
 
         return substr(str_shuffle($characters), 0, 6);
     }
-
+    // end region for generate shortcode
 
 }

@@ -31,15 +31,22 @@ class V2ShortenService extends Service
      */
 
     public function getAll(){
-        return $this->v2ShortenRepository->getAll();
+        $allData = $this->v2ShortenRepository->getAll();
+        return $allData;
     }
 
     public function getByShortcode($shortcode){
-        return $this->v2ShortenRepository->getByShortcode($shortcode);
+        $dataByShortcode = $this->v2ShortenRepository->getByShortcode($shortcode);
+        return $dataByShortcode;
     }
 
-    public function addShorten($url, $shortcode){
-        return $this->v2ShortenRepository->addShorten($url, $shortcode);
+    public function addShorten($url, $shortcode, $startDate){
+        $shorten = $this->v2ShortenRepository->addShorten($url, $shortcode, $startDate);
+        return $shorten;
     }
 
+    public function getStatusByShortcode($shortcode){
+        $status = $this->v2ShortenRepository->getStatusShortcode($shortcode);
+        return $status;
+    }
 }

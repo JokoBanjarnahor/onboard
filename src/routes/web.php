@@ -23,3 +23,4 @@ $router->post('/v1/users/{id}','V1\UserController@updateById');
 // shorten url
 $router->post('/shorten', 'V2\V2ShortenController@addShorten');
 $router->get('/shorten/{shortcode}', 'V2\V2ShortenController@getByShortcode');
+$router->get('/shorten/{shortcode}/stats', 'V2\V2ShortenController@getStatusByShortcode');
