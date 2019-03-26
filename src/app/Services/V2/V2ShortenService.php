@@ -34,6 +34,10 @@ class V2ShortenService extends Service
         return $this->v2ShortenRepository->getAll();
     }
 
+    public function getByShortcode($shortcode){
+        return $this->v2ShortenRepository->getByShortcode($shortcode);
+    }
+
     public function addShorten($url, $shortcode){
         return $this->v2ShortenRepository->addShorten($url, $shortcode);
     }

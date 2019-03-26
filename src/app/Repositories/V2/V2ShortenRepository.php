@@ -14,12 +14,23 @@ class V2ShortenRepository extends Repository {
 
     public function getAll(){
         return \DB::table('shorten')
-//            ->select('url', 'shortcode')
             ->get();
     }
 
+    public function getByShortcode($shortcode){
+        return \DB::table('shorten')
+            ->where('shortcode', $shortcode)
+            ->first();
+    }
+
+    public function ifShortcodeExists($shortcode){
+        return \DB::table('shorten')
+            ->where('shortcode', $shortcode)
+            ->exists();
+    }
+
     public function addShorten($url, $shortcode){
-        \DB::table('shorten')
+        return \DB::table('shorten')
             ->insert(
               ['url' => $url, 'shortcode' => $shortcode]
             );
