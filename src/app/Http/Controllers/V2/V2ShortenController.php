@@ -34,7 +34,7 @@ class V2ShortenController extends Controller
         // get current date
         $startDate = date('c');
 
-        //var_dump($allData->contains('shortcode', '789asd'));
+        // get url and shortcode parameter value
         $url = $request->json()->get('url');
         $shortcode = $request->json()->get('shortcode');
 
@@ -52,7 +52,7 @@ class V2ShortenController extends Controller
         // input shortcode meet the reguirement regex
 
         if ($shortcode == '' || $data->contains('shortcode', $shortcode)){
-            // put generated shortcode here and date dont forget
+
             $shortcode = $this->generateShortcode();
 
             while($data->contains('shortcode', $shortcode)){
@@ -86,16 +86,23 @@ class V2ShortenController extends Controller
     // region for get status by shortcode
     public function getStatusByShortcode($shortcode, Request $request, V2ShortenService $v2ShortenService){
 
-        $data = $v2ShortenService->getStatusByShortcode($shortcode);
+        $data = $v2ShortenService->getAll();
+        $statusData = $v2ShortenService->getStatusByShortcode($shortcode);
 
-        // change date format to ISO 8601
-        $startDate = new \DateTime($data->startDate);
-        $lastSeenDate = new \DateTime($data->lastSeenDate);
+        if ($data->contains('shortcode', $shortcode)){
+            // change date format to ISO 8601
+            $startDate = new \DateTime($statusData->startDate);
+            $lastSeenDate = new \DateTime($statusData->lastSeenDate);
 
-        $data->startDate = $startDate->format('c');
-        $data->lastSeenDate = $lastSeenDate->format('c');
+            // set date with changed date format
+            $statusData->startDate = $startDate->format('c');
+            $statusData->lastSeenDate = $lastSeenDate->format('c');
+        } else {
+            return response()->json('The shortcode cannot be found in the system',
+                HTTPStatus::HTTP_NOT_FOUND);
+        }
 
-        return response()->json($data);
+        return response()->json($statusData);
     }
     // end region for get status by shortcode
 
