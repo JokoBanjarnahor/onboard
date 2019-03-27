@@ -17,23 +17,18 @@ class V2ShortenRepository extends Repository {
             ->get();
     }
 
+    // for redirect url
     public function getByShortcode($shortcode){
         return \DB::table('shorten')
             ->where('shortcode', $shortcode)
             ->first();
     }
 
-    public function getShortcodeByShortcode($shortcode){
+    public function getShortcodeById($id){
         return \DB::table('shorten')
-            ->where('shortcode', $shortcode)
+            ->where('id', $id)
             ->select('shortcode')
             ->first();
-    }
-
-    public function ifShortcodeExists($shortcode){
-        return \DB::table('shorten')
-            ->where('shortcode', $shortcode)
-            ->exists();
     }
 
     public function incrementShorten($shortcode){
@@ -52,12 +47,12 @@ class V2ShortenRepository extends Repository {
     }
 
     public function addShorten($url, $shortcode, $startDate){
-         \DB::table('shorten')
-            ->insert(
+         $id = \DB::table('shorten')
+            ->insertGetId(
               ['url' => $url, 'shortcode' => $shortcode, 'startDate' => $startDate]
             );
 
-        return $this->getShortcodeByShortcode($shortcode);
+        return $this->getShortcodeById($id);
     }
 
     public function getStatusShortcode($shortcode){
@@ -66,4 +61,11 @@ class V2ShortenRepository extends Repository {
             ->select('startDate', 'lastSeenDate', 'redirectCount')
             ->first();
     }
+
+//    public function ifShortcodeExists($shortcode){
+//        return \DB::table('shorten')
+//            ->where('shortcode', $shortcode)
+//            ->exists();
+//    }
+
 }

@@ -17,6 +17,9 @@ use App\Http\Controllers\Controller;
 
 class V2ShortenController extends Controller
 {
+
+    private $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
+
     // region for get all data
     public function getAll(Request $request, V2ShortenService $v2ShortenService){
 
@@ -48,6 +51,11 @@ class V2ShortenController extends Controller
                 HTTPStatus::HTTP_CONFLICT);
         }
 
+        if(!$this->checkRegex($shortcode)){
+            return response()->json('The shortcode fails to meet the following regexp: ^[0-9a-zA-Z_]{4,}$.',
+                HTTPStatus::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         // Remember add handler to check if the
         // input shortcode meet the reguirement regex
 
@@ -66,7 +74,7 @@ class V2ShortenController extends Controller
     }
     // end region add shortcode
 
-    // region for get by shortcode
+    // region for redirect url by shortcode
     public function getByShortcode($shortcode, Request $request, V2ShortenService $v2ShortenService){
 
         $currentDate = date('c');
@@ -81,7 +89,7 @@ class V2ShortenController extends Controller
 
         return response(redirect($data->url), HTTPStatus::HTTP_FOUND);
     }
-    // end region for get by shortcode
+    // end region for redirect url by shortcode
 
     // region for get status by shortcode
     public function getStatusByShortcode($shortcode, Request $request, V2ShortenService $v2ShortenService){
@@ -108,11 +116,16 @@ class V2ShortenController extends Controller
 
     // region for generate shortcode
     private function generateShortcode(){
-
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
-
-        return substr(str_shuffle($characters), 0, 6);
+        return substr(str_shuffle($this->characters), 0, 6);
     }
     // end region for generate shortcode
+
+    // region for validate shortcode meet the regex requirement
+    private function checkRegex($shortcode){
+        $regex = '/^[0-9a-zA-Z_]{6}$/';
+
+        return boolval(preg_match($regex, $shortcode));
+    }
+    // end of region for validate shortcode meet the regex requirement
 
 }

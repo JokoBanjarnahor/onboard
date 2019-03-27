@@ -17,9 +17,9 @@ class CreateShortenTable extends Migration
             $table->increments('id');
             $table->string('url');
             $table->string('shortcode', 6);
-            $table->date('startDate');
-            $table->date('lastSeenDate');
-            $table->date('redirectCount');
+            $table->dateTimeTz('startDate');
+            $table->dateTimeTz('lastSeenDate');
+            $table->integer('redirectCount');
             $table->timestamps();
         });
     }
